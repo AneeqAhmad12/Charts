@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Chart</title>
+    <link rel="stylesheet" href="./chart3.css">
+</head>
+<body>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/boost.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<figure class="highcharts-figure">
+  <div id="container"></div>
+  <p class="highcharts-description">
+    Using the Highcharts Boost module, it is possible to render large amounts
+    of data on the client side. This chart shows a line series with 500,000
+    data points. The points represent hourly data since 1965. Click and drag
+    in the chart to zoom in.
+  </p>
+</figure>
+<script>
+    function getData(n) {
+  var arr = [],
+    i,
+    x,
+    a,
+    b,
+    c,
+    spike;
+  for (
+    i = 0, x = Date.UTC(new Date().getUTCFullYear(), 0, 1) - n * 36e5;
+    i < n;
+    i = i + 1, x = x + 36e5
+  ) {
+    if (i % 100 === 0) {
+      a = 2 * Math.random();
+    }
+    if (i % 1000 === 0) {
+      b = 2 * Math.random();
+    }
+    if (i % 10000 === 0) {
+      c = 2 * Math.random();
+    }
+    if (i % 50000 === 0) {
+      spike = 10;
+    } else {
+      spike = 0;
+    }
+    arr.push([
+      x,
+      2 * Math.sin(i / 100) + a + b + c + spike + Math.random()
+    ]);
+  }
+  return arr;
+}
+var n = 500000,
+  data = getData(n);
+
+
+console.time('line');
+Highcharts.chart('container', {
+
+  chart: {
+    zoomType: 'x'
+  },
+
+  title: {
+    text: 'Highcharts drawing ' + n + ' points'
+  },
+
+  subtitle: {
+    text: 'Using the Boost module'
+  },
+
+  accessibility: {
+    screenReaderSection: {
+      beforeChartFormat: '<{headingTagName}>{chartTitle}</{headingTagName}><div>{chartSubtitle}</div><div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>{yAxisDescription}</div>'
+    }
+  },
+
+  tooltip: {
+    valueDecimals: 2
+  },
+
+  xAxis: {
+    type: 'datetime'
+  },
+
+  series: [{
+    data: data,
+    lineWidth: 0.5,
+    name: 'Hourly data points'
+  }]
+
+});
+console.timeEnd('line');
+</script>
+</body>
+</html>
